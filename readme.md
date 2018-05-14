@@ -2,7 +2,7 @@
 
 This is a [Google Cloud Function](https://cloud.google.com/functions/) I hacked together that takes a url to an article on the web, and generates an audio file of it using Google's new [Cloud Text-To-Speech](https://cloud.google.com/text-to-speech/) API which has been updated with access to DeepMind's [WaveNet](https://deepmind.com/blog/wavenet-generative-model-raw-audio/) voices.
 
-I created it as part of a project to generate a personal podcast of articles I want to consume. To get the full thing working see my other repository with the Cloud Function that generates the Podcast RSS.
+I created it as part of a project to generate a personal podcast of articles I want to consume. To get the full thing working see my [other repository](https://github.com/malob/generate-podcast-rss-cloud-function) with the Cloud Function that generates the Podcast RSS.
 
 ## Sketch of how it works
   * The function accepts a POST request with json in the body.
