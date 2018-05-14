@@ -29,11 +29,11 @@ exports.articleToAudio = (req, res) => {
   } else {
     cleanWorkingDir((err) => {
       getArticleData(req.body.url, (err, articleData) => {
-        if (err) { res.status(400).send('Something went wrong while fetching article data:\n' + err); }
+        if (err) { res.status(400).send('Something went wrong while fetching article data.\n' + err); }
         else {
           articleData.content = chunkText(articleData.content, 5000);
           async.map(articleData.content, getTtsAudio, (err, audio) => {
-            if (err) { res.status(400).send('TTS conversion conversion failed.\n' + err); }
+            if (err) { res.status(400).send('TTS conversion failed.\n' + err); }
             else {
               async.eachOf(audio, writeAudioFiles, (err) => {
                 if (err) { res.status(400).send('Failed to write audio segment(s) to disk.\n' + err); }
@@ -131,11 +131,8 @@ function getTtsAudio(str, cb) {
   };
 
   ttsClient.synthesizeSpeech(ttsRequest, (err, res) => {
-    if (err) {
-      cb(err, null);
-    } else {
-      cb(null, res.audioContent);
-    }
+    if (err) { cb(err, null); }
+    else { cb(null, res.audioContent); }
   });
 }
 
@@ -192,10 +189,7 @@ function createGcsObject(articleData, audioPath, cb) {
   storage
     .bucket(gcpBucketName)
     .upload(audioPath, objectOptions, (err, metadata, apiResponse) => {
-      if (err) {
-        cb(err, null);
-      } else {
-        cb(null, metadata);
-      }
+      if (err) { cb(err, null); }
+      else { cb(null, metadata); }
     });
 }
