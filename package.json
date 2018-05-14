@@ -1,0 +1,20 @@
+{
+  "name": "article-to-audio",
+  "version": "0.5.0",
+  "author": {
+    "name": "Malo Bourgon",
+    "url": "https://malob.me"
+  },
+  "dependencies": {
+    "@google-cloud/storage": "latest",
+    "@google-cloud/text-to-speech": "latest",
+    "request": "latest",
+    "html-to-text": "latest",
+    "chunk-text": "latest",
+    "async": "latest",
+    "audio-buffer-utils": "latest",
+    "ffmpeg-static": "latest",
+    "fluent-ffmpeg": "latest",
+    "ffprobe-static": "latest"
+  }
+}
