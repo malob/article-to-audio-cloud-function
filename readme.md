@@ -9,8 +9,8 @@ I created it as part of a project to generate a personal podcast of articles I w
     * E.g. `{"url": "http://example.com/somearticle"}`
   * It then uses the free [Mercury Web Parser](https://mercury.postlight.com/web-parser/) API to get the body of the article and some metadata.
   * Since the body is returned as HTML it then converts it to plain text. I also add some of the metadata at the top of the article, since I wanted this in the audio.
-  * Then it slits up the body into chucks of no larger then 5,000 characters, since that's the limit on what the TTS API can handle per request.
-  * From there is then sends each chuck of text to Google's TTS API which returns the audio encoded as MP3, and writes them to a temporary location.
+  * Then it slits up the body into chunks of no larger then 5,000 characters, since that's the limit on what the TTS API can handle per request.
+  * From there is then sends each chunk of text to Google's TTS API which returns the audio encoded as MP3, and writes them to a temporary location.
   * Since having multiple files for parts of the article is annoying, it then uses FFMPEG to concatenate the audio chunks into one file.
   * Finally, it stores the audio file as and object in a Google Cloud Storage bucket, along with some of the metadata.
 
