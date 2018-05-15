@@ -29,17 +29,18 @@ exports.articleToAudio = (req, res) => {
   } else {
     cleanWorkingDir((err) => {
       getArticleData(req.body.url, (err, articleData) => {
-        if (err) { res.status(400).send('Something went wrong while fetching article data:\n' + err); }
+        if (err) { res.status(400).send('Something went wrong while fetching article data.\n' + err); }
         else {
           articleData.content = chunkText(articleData.content, 5000);
           async.map(articleData.content, getTtsAudio, (err, audio) => {
-            if (err) { res.status(400).send('TTS conversion conversion failed.\n' + err); }
+            if (err) { res.status(400).send('TTS conversion failed.\n' + err); }
             else {
               async.eachOf(audio, writeAudioFiles, (err) => {
                 if (err) { res.status(400).send('Failed to write audio segment(s) to disk.\n' + err); }
                 else {
                   fs.readdir(workingDir, (err, fileNames) => {
-                    var filePaths = fileNames.map((x) => { return path.join(workingDir, x); });
+                    fileNames.sort();
+                    let filePaths = fileNames.map((x) => { return path.join(workingDir, x); });
                     concatAudioFiles(filePaths, (err, singleFilePath) => {
                       if (err) { res.status(400).send('Failed to concatinate audio files.\n' + err); }
                       else {
@@ -101,7 +102,7 @@ function getArticleData(url, cb) {
       cb(err, null);
     } else if (res.statusCode != 200) {
       cb('Mercury Parser experienced and issue.', null);
-    } else if (!body.content) {
+    } else if (!body.content || !body.title) {
       cb('Mercury Parser could not find or process the article body.', null);
     } else {
       // Convert content to plain text
@@ -131,16 +132,14 @@ function getTtsAudio(str, cb) {
   };
 
   ttsClient.synthesizeSpeech(ttsRequest, (err, res) => {
-    if (err) {
-      cb(err, null);
-    } else {
-      cb(null, res.audioContent);
-    }
+    if (err) { cb(err, null); }
+    else { cb(null, res.audioContent); }
   });
 }
 
 // Used to write audioData to disk before concatinating with ffmpeg
 function writeAudioFiles(audioData, key, cb) {
+  key = key + 1000; // To make sorting of files easier later
   filePath = path.join(workingDir, key + '.mp3');
   fs.writeFile(filePath, audioData, 'binary', (err) => {
     if (err) { cb(err); }
@@ -192,10 +191,7 @@ function createGcsObject(articleData, audioPath, cb) {
   storage
     .bucket(gcpBucketName)
     .upload(audioPath, objectOptions, (err, metadata, apiResponse) => {
-      if (err) {
-        cb(err, null);
-      } else {
-        cb(null, metadata);
-      }
+      if (err) { cb(err, null); }
+      else { cb(null, metadata); }
     });
 }
