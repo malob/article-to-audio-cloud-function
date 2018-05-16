@@ -19,7 +19,7 @@ const ffprobeStatic = require('ffprobe-static');
 const rmrf = require('rimraf');
 
 // Global constants [FILL ME IT!]
-const workingDir = os.tmpdir(); // Change this if running locally
+const workingDir = path.join(os.tmpdir(), 'MP3'); // Change this if running locally
 const gcpProjectId = undefined;
 const gcpBucketName = undefined;
 const mercuryApiKey = undefined;
