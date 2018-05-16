@@ -15,6 +15,7 @@
     "audio-buffer-utils": "latest",
     "ffmpeg-static": "latest",
     "fluent-ffmpeg": "latest",
-    "ffprobe-static": "latest"
+    "ffprobe-static": "latest",
+    "rimraf": "latest"
   }
 }

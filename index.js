@@ -16,6 +16,7 @@ const async = require('async');
 const ffmpeg = require('fluent-ffmpeg');
 const ffmpegStatic = require('ffmpeg-static');
 const ffprobeStatic = require('ffprobe-static');
+const rmrf = require('rimraf');
 
 // Global constants [FILL ME IT!]
 const workingDir = os.tmpdir(); // Change this if running locally
@@ -27,7 +28,8 @@ exports.articleToAudio = (req, res) => {
   if (req.body.url === undefined) {
     res.status(400).send('No url provided!');
   } else {
-    cleanWorkingDir((err) => {
+    rmrf(workingDir, (err) => {
+      fs.mkdirSync(workingDir);
       getArticleData(req.body.url, (err, articleData) => {
         if (err) { res.status(400).send('Something went wrong while fetching article data.\n' + err); }
         else {
@@ -62,18 +64,6 @@ exports.articleToAudio = (req, res) => {
     });
   }
 };
-
-// Used to make sure the working directory is clean before starting
-function cleanWorkingDir(cb) {
-  fs.readdir(workingDir, (err, fileNames) => {
-    if (fileNames) {
-      filePaths = fileNames.map((x) => { return path.join(workingDir, x); });
-      async.forEach(filePaths, fs.unlink, (err) => { cb(err); });
-    } else {
-      cb();
-    }
-  });
-}
 
 // Uses Mercury Parser API to retrieve article data including content
 // then does some processing of the data.
